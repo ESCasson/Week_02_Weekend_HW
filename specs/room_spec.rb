@@ -11,7 +11,14 @@ class RoomTest < MiniTest::Test
 
   def setup
     @room = Room.new("One")
-    @CustomerBob = Customer.new("Bob")
+    @CustomerBob = Customer.new("Bob",10)
+    @CustomerBill = Customer.new("Bill",10)
+    @CustomerSteve = Customer.new("Steve",10)
+    @CustomerKaren = Customer.new("Karen",10)
+    @CustomerSally = Customer.new("Sally",10)
+    @CustomerSarah = Customer.new("Sarah",10)
+    @CustomerEllie = Customer.new("Ellie",3)
+
     @songRun = Song.new("Run", "Foo Fighters")
   end
 
@@ -27,10 +34,31 @@ class RoomTest < MiniTest::Test
     assert(0, @room.playlist.length())
   end
 
-  def test_customer_can_enter_room
+  def test_customer_can_enter_room__there_is_capacity
     @room.customer_enters_room(@CustomerBob)
     assert_equal(1,@room.customers.length())
+    assert_equal(6, @CustomerBob.money)
   end
+
+  def test_customer_can_enter_room__there_is_not_capacity
+    @room.customer_enters_room(@CustomerBob)
+    @room.customer_enters_room(@CustomerBill)
+    @room.customer_enters_room(@CustomerSteve)
+    @room.customer_enters_room(@CustomerKaren)
+    @room.customer_enters_room(@CustomerSally)
+    @room.customer_enters_room(@CustomerSarah)
+    assert_equal("Full, Ellie can't enter", @room.customer_enters_room(@CustomerEllie))
+  end
+
+  def test_customer_can_enter_room__there_is_capacity_customer_lacks_money
+    @room.customer_enters_room(@CustomerEllie)
+    assert_equal(0,@room.customers.length())
+    assert_equal(3, @CustomerEllie.money)
+    assert_equal("Ellie does not have enough money so can't enter.", @room.customer_enters_room(@CustomerEllie))
+  end
+
+
+
 
   def test_customer_can_leave_room
     @room.customer_enters_room(@CustomerBob)

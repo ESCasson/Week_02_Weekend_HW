@@ -1,4 +1,3 @@
-require('pry')
 class Room
 
 attr_reader :name, :customers, :playlist
